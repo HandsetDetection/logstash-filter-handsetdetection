@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   # Gem dependencies
   s.add_runtime_dependency "logstash-core", ">= 2.0.0", "< 3.0.0"
   s.add_runtime_dependency "json", "~> 1.8"
-  s.add_runtime_dependency "handset_detection", "~> 0.1", ">= 0.1.7"
+  s.add_runtime_dependency "handset_detection", "~> 0.1", ">= 0.1.8"
 
   #s.add_development_dependency 'logstash-devutils'
 end
