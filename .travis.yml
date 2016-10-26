@@ -1,0 +1,9 @@
+language: ruby
+
+sudo: required
+
+services:
+  - docker
+
+script:
+  - ./ci/docker-run.sh 
