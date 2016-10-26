@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/HandsetDetection/logstash-filter-handsetdetection.svg?branch=master)](https://travis-ci.org/HandsetDetection/logstash-filter-handsetdetection)
+[![Gem Version](https://badge.fury.io/rb/logstash-filter-handsetdetection.svg)](https://badge.fury.io/rb/logstash-filter-handsetdetection)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # Handset Detection for Logstash
 
 This is the [Handset Detection](http://www.handsetdetection.com/) plugin for [Logstash](https://github.com/elastic/logstash).
