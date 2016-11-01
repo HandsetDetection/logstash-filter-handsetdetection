@@ -18,7 +18,7 @@ gosu logstash logstash -e '
             username => "'$API_USERNAME'"
             password => "'$API_SECRET'"
             site_id => '$API_SITE_ID' 
-            filter => ["general_vendor", "general_model", "general_type"]
+            filter => ["general_vendor", "general_model", "general_type", "general_platform", "general_platform_version", "general_browser", "general_browser_version"]
             online_api => true
         } 
     }
@@ -45,7 +45,7 @@ gosu logstash logstash -e '
             username => "'$API_USERNAME'"
             password => "'$API_SECRET'"
             site_id => '$API_SITE_ID'
-            filter => ["general_vendor", "general_model", "general_type"]
+            filter => ["general_vendor", "general_model", "general_type", "general_platform", "general_platform_version", "general_browser", "general_browser_version"]
         } 
     }
     output { 
