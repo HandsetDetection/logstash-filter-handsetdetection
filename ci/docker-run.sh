@@ -14,4 +14,4 @@ docker run -i --rm \
     logstash:2.3.4 \
     /logstash.sh | tee output.txt 
  
-grep general_model output.txt | cmp ci/general_model.txt
+grep \"general_[a-z_]*\"\ = output.txt | cmp ci/expected.txt
