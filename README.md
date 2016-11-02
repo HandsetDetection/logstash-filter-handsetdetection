@@ -52,10 +52,10 @@ Extract the User-Agent header from an Apache log with Grok, and then enrich the 
 
 ```
 # Logstash 2.3 and higher
-bin/logstash-plugin install logstash-filter-handsetdetection-1.1.0.gem 
+bin/logstash-plugin install logstash-filter-handsetdetection-1.1.0
 
 # Prior to Logstash 2.3
-bin/plugin install logstash-filter-handsetdetection-1.1.0.gem
+bin/plugin install logstash-filter-handsetdetection-1.1.0
 ```
 
 ## Building from source
