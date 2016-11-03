@@ -1,11 +1,19 @@
 language: ruby
 
-sudo: required
-
-services:
-  - docker
-
 install: /bin/true
 
+env:
+  - LS_URL=https://artifacts.elastic.co/downloads/logstash/logstash-5.0.0.tar.gz API_ONLINE=true
+  - LS_URL=https://artifacts.elastic.co/downloads/logstash/logstash-5.0.0.tar.gz API_ONLINE=false
+  - LS_URL=https://download.elastic.co/logstash/logstash/logstash-2.4.0.tar.gz   API_ONLINE=true
+  - LS_URL=https://download.elastic.co/logstash/logstash/logstash-2.4.0.tar.gz   API_ONLINE=false
+
 script:
-  - ./ci/docker-run.sh 
+  - ./ci/ci-run.sh 
+
+cache:
+  directories:
+  - $HOME/.m2
+
+jdk:
+  - oraclejdk8
