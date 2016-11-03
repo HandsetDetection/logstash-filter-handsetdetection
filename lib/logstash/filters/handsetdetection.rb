@@ -83,8 +83,8 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
   def filter(event)
     data = {}
     @match.each do |src, dest|
-      if event.include? src
-        data[dest] = event[src]
+      unless event.get(src).nil?
+        data[dest] = event.get src
       end
     end 
     hd = @@pool.pop
@@ -93,16 +93,16 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
     r = hd.get_reply
     @@pool << hd
     if r.key? 'class'
-      event['handset_class'] = r['class']
+      event.set 'handset_class', r['class']
     end
     if r.key? 'hd_specs'
       if @filter.empty?
-        event['handset_specs'] = r['hd_specs']
+        event.set 'handset_specs', r['hd_specs']
       else
-        event['handset_specs'] = {} 
+        event.set 'handset_specs', {} 
         @filter.each do |f|
           if r['hd_specs'].key? f
-            event['handset_specs'][f] = r['hd_specs'][f]
+            event.set "[handset_specs][#{f}]", r['hd_specs'][f]
           end
         end 
       end
