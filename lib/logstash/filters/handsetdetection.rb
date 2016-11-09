@@ -27,7 +27,7 @@
 require 'logstash/filters/base'
 require 'logstash/namespace'
 require 'handset_detection'
-require 'concurrent'
+require 'thread_safe'
 
 
 class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
@@ -72,7 +72,7 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
     @hd_config['log_unknown'] = @log_unknown 
     @hd_config['local_archive_source'] = @local_archive_source 
 
-    @@pool = Concurrent::Array.new 
+    @@pool = ThreadSafe::Array.new 
     unless @online_api
       hd = HD4.new @hd_config
       hd.set_timeout 500
