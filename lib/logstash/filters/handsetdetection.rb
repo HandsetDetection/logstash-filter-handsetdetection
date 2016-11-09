@@ -27,6 +27,8 @@
 require 'logstash/filters/base'
 require 'logstash/namespace'
 require 'handset_detection'
+require 'thread_safe'
+
 
 class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
 
@@ -44,6 +46,7 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
   config :proxy_port,   :validate => :number,  :default => 3128 
   config :proxy_user,   :validate => :string,  :default => '' 
   config :proxy_pass,   :validate => :string,  :default => '' 
+  config :log_unknown,  :validate => :boolean, :default => true
   config :local_archive_source, :validate => :string, :default => nil
 
   public
@@ -66,10 +69,10 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
     @hd_config['proxy_user'] = @proxy_user
     @hd_config['proxy_pass'] = @proxy_pass
     @hd_config['retries'] = 3 
-    @hd_config['log_unknown'] = true 
+    @hd_config['log_unknown'] = @log_unknown 
     @hd_config['local_archive_source'] = @local_archive_source 
 
-    @@pool = []
+    @@pool = ThreadSafe::Array.new 
     unless @online_api
       hd = HD4.new @hd_config
       hd.set_timeout 500
@@ -87,25 +90,34 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
         data[dest] = event.get src
       end
     end 
-    hd = @@pool.pop
-    hd = HD4.new @hd_config if hd.nil?
-    hd.device_detect data
-    r = hd.get_reply
-    @@pool << hd
-    if r.key? 'class'
-      event.set 'handset_class', r['class']
-    end
-    if r.key? 'hd_specs'
-      if @filter.empty?
-        event.set 'handset_specs', r['hd_specs']
-      else
-        event.set 'handset_specs', {} 
-        @filter.each do |f|
-          if r['hd_specs'].key? f
-            event.set "[handset_specs][#{f}]", r['hd_specs'][f]
-          end
-        end 
+    event.set 'handset_detection', {}
+    unless data.empty?
+      hd = @@pool.pop
+      hd = HD4.new @hd_config if hd.nil?
+      hd.device_detect data
+      r = hd.get_reply
+      @@pool << hd
+      if r.key? 'status'
+        event.set '[handset_detection][status]', r['status']
       end
+      if r.key? 'message'
+        event.set '[handset_detection][message]', r['message']
+      end
+      if r.key? 'hd_specs'
+        if @filter.empty?
+          event.set '[handset_detection][specs]', r['hd_specs']
+        else
+          event.set '[handset_detection][specs]', {} 
+          @filter.each do |f|
+            if r['hd_specs'].key? f
+              event.set "[handset_detection][specs][#{f}]", r['hd_specs'][f]
+            end
+          end 
+        end
+      end
+      else
+        event.set '[handset_detection][status]', 299 
+        event.set '[handset_detection][message]', 'Error : Missing Data' 
     end
     filter_matched event
   end
