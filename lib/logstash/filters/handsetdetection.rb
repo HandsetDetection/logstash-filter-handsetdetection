@@ -56,7 +56,7 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
     @hd_config['secret'] = @password
     @hd_config['site_id'] = @site_id
     @hd_config['use_local'] = @online_api ? false : true 
-    @hd_config['filesdir'] = '/tmp'
+    @hd_config['filesdir'] = Dir.tmpdir 
     @hd_config['cache'] = {'none' => {}}
     @hd_config['debug'] = false
     @hd_config['api_server'] = @apiserver
