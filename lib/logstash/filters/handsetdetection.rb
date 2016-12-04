@@ -34,11 +34,12 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
 
   config_name 'handsetdetection'
 
-  config :online_api,   :validate => :boolean, :default => false
+  config :detection_type, :validate => :string, :default => 'cloud'
   config :username,     :validate => :string,  :default => ''
   config :password,     :validate => :string,  :default => ''
   config :site_id,      :validate => :number,  :default => 0
   config :apiserver,    :validate => :string,  :default => 'api.handsetdetection.com'
+  config :db_refresh_days, :validate => :number, :default => 10
   config :match,        :validate => :hash,    :default => { 'agent' => 'user-agent' }
   config :filter,       :validate => :array,   :default => [] 
   config :use_proxy,    :validate => :boolean, :default => false 
@@ -47,6 +48,8 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
   config :proxy_user,   :validate => :string,  :default => '' 
   config :proxy_pass,   :validate => :string,  :default => '' 
   config :log_unknown,  :validate => :boolean, :default => true
+  config :cache,        :validate => :boolean, :default => true
+  config :cache_requests, :validate => :boolean, :default => false
   config :local_archive_source, :validate => :string, :default => nil
 
   public
@@ -55,12 +58,11 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
     @hd_config['username'] = @username
     @hd_config['secret'] = @password
     @hd_config['site_id'] = @site_id
-    @hd_config['use_local'] = @online_api ? false : true 
     @hd_config['filesdir'] = Dir.tmpdir 
-    @hd_config['cache'] = {'none' => {}}
+    @hd_config['cache'] = @cache ? {'memory' => {'thread_safe' => true}} : {'none' => {}}
     @hd_config['debug'] = false
     @hd_config['api_server'] = @apiserver
-    @hd_config['cache_requests'] = false
+    @hd_config['cache_requests'] = @cache_requests
     @hd_config['geoip'] = true
     @hd_config['timeout'] = 30
     @hd_config['use_proxy'] = @use_proxy
@@ -73,12 +75,23 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
     @hd_config['local_archive_source'] = @local_archive_source 
 
     @@pool = ThreadSafe::Array.new 
-    unless @online_api
+    if @detection_type == 'ultimate' or @detection_type == 'community'
+      @hd_config['use_local'] = true
       hd = HD4.new @hd_config
-      hd.set_timeout 500
-      hd.device_fetch_archive
-      hd.set_timeout 30
+      path = (@detection_type == 'ultimate') ? hd.device_get_zip_path :  hd.community_get_zip_path
+      if !File.exist?(path) or (Time.now - File.mtime(path)) / (24 * 3600) > @db_refresh_days
+        hd.set_timeout 500
+        result = (@detection_type == 'ultimate') ? hd.device_fetch_archive : hd.community_fetch_archive
+        raise LogStash::Error, "Error downloading the Handset Detection database. (Original cause: \"#{hd.get_reply['message']}\") Please try again." unless result
+        hd.set_timeout 30
+      else
+        # Do not download the ZIP file.
+      end
       @@pool << hd
+    elsif @detection_type == 'cloud'
+      @hd_config['use_local'] = false
+    else
+      raise LogStash::ConfigurationError, 'Detection_type should be one of: cloud, ultimate, community.'
     end
   end
 
