@@ -21,7 +21,7 @@ Extract the User-Agent header from an Apache log with Grok, and then enrich the 
             username   => "xxxxxxxxxx" 
             password   => "xxxxxxxxxxxxxxxx"
             site_id    => 000000
-            online_api => false
+            detection_type   => ultimate
             match      => { 
                 "agent" => "user-agent" 
             }
@@ -36,10 +36,11 @@ Extract the User-Agent header from an Apache log with Grok, and then enrich the 
 
 | Field | Description | Default |
 | --- | --- | --- |
-| `online_api` | Set to `true` in order to do **online** lookups against the Handset Detection API  | `false` |
+| `detection_type` | Set to `cloud` in order to do **online** lookups against the Handset Detection API. Set to `ultimate` to use Handset Detection **Ultimate Edition**. Set to `community` to use Handset Detection **Community Edition** | `cloud` |
 | `username` | Your Handset Detection API username | |
 | `password` | Your Handset Detection API password | |
 | `site_id` | The Handset Detection API site ID to use | |
+| `db_refresh_days` | How often to update the locally stored database, in days (for Handset Detection Ultimate Edition and Community Edition) | `10` |
 | `match` | An associative array mapping input field names to header names used for handset detection. For example: Extract the `user-agent` header from the `agent` input field. | `{ "agent" => "user-agent" }` |
 | `filter` | Optionally, define an array of the handset spec properties to be included in the output. By default, all properties are included in the output. | [] |
 | `use_proxy` | Set to `true` if accessing the web through a proxy | `false` |

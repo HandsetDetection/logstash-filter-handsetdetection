@@ -3,8 +3,8 @@
                      "general_browser" => "Android Webkit",
                      "general_browser" => "Internet Explorer",
                      "general_browser" => "UC Browser",
+             "general_browser_version" => "2.x"
              "general_browser_version" => "3.0.4"
-             "general_browser_version" => "4.0"
              "general_browser_version" => "4.0"
              "general_browser_version" => "6.0"
              "general_browser_version" => "7.9"
