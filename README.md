@@ -21,7 +21,7 @@ Extract the User-Agent header from an Apache log with Grok, and then enrich the 
             username   => "xxxxxxxxxx" 
             password   => "xxxxxxxxxxxxxxxx"
             site_id    => 000000
-            detection_type   => ultimate
+            detection_type   => "ultimate"
             match      => { 
                 "agent" => "user-agent" 
             }
@@ -53,10 +53,10 @@ Extract the User-Agent header from an Apache log with Grok, and then enrich the 
 
 ```
 # Logstash 2.3 and higher
-bin/logstash-plugin install logstash-filter-handsetdetection-1.1.0
+bin/logstash-plugin install logstash-filter-handsetdetection
 
 # Prior to Logstash 2.3
-bin/plugin install logstash-filter-handsetdetection-1.1.0
+bin/plugin install logstash-filter-handsetdetection
 ```
 
 ## Building from source
