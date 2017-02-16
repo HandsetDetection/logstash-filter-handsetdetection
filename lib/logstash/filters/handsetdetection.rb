@@ -117,6 +117,7 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
         event.set '[handset_detection][message]', r['message']
       end
       if r.key? 'hd_specs'
+        r['hd_specs'] = add_convenience_fields r['hd_specs']
         if @filter.empty?
           event.set '[handset_detection][specs]', r['hd_specs']
         else
@@ -133,5 +134,25 @@ class LogStash::Filters::HandsetDetection < LogStash::Filters::Base
         event.set '[handset_detection][message]', 'Error : Missing Data' 
     end
     filter_matched event
+  end
+
+  def add_convenience_fields(specs)
+    unless specs.key? 'general_device_name'
+      if specs.key? 'general_aliases' and specs['general_aliases'].is_a? Array and specs['general_aliases'].count > 0
+        specs['general_device_name'] = specs['general_aliases'][0].strip
+      else
+        specs['general_device_name'] = "#{specs.fetch('general_vendor', '')} #{specs.fetch('general_model', '')}".strip
+      end
+    end
+    unless specs.key? 'general_platform_name'
+      specs['general_platform_name'] = "#{specs.fetch('general_platform', '')} #{specs.fetch('general_platform_version', '')}".strip
+    end
+    unless specs.key? 'general_browser_name'
+      specs['general_browser_name']  = "#{specs.fetch('general_browser', '')} #{specs.fetch('general_browser_version', '')}".strip
+    end
+    unless specs.key? 'general_app_name'
+      specs['general_app_name']      = "#{specs.fetch('general_app', '')} #{specs.fetch('general_app_version', '')}".strip
+    end
+    specs
   end
 end
