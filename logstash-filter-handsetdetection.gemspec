@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'logstash-filter-handsetdetection'
-  s.version = '4.1.8'
+  s.version = '4.1.9'
   s.licenses = ['MIT']
   s.summary = "Handset Detection filter plugin for Logstash"
   s.description = "This gem is a Logstash plugin required to be installed on top of the Logstash core pipeline using $LS_HOME/bin/logstash-plugin install gemname. This gem is not a stand-alone program"
@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   # Gem dependencies
   s.add_runtime_dependency "logstash-core-plugin-api", ">= 1.60", "<= 2.99" 
-  s.add_runtime_dependency "handset_detection", "~> 4.2", ">= 4.2.2"
+  s.add_runtime_dependency "handset_detection", "~> 4.2", ">= 4.2.4"
 
   #s.add_development_dependency 'logstash-devutils'
 end
