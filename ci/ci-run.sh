@@ -37,5 +37,5 @@ cd $LS
     }
 ' < ../ci/sample.log | tee output.txt
 
-grep \"general_[a-z_]*\"\ = output.txt | sort | cmp ../ci/expected.txt
+grep \"general_[a-z_]*\"\ = output.txt | tr -d ',' | sort | cmp ../ci/expected.txt
 cd ..

@@ -3,6 +3,8 @@ language: ruby
 install: /bin/true
 
 env:
+  - LS_URL=https://artifacts.elastic.co/downloads/logstash/logstash-6.4.0.tar.gz API_TYPE=cloud
+  - LS_URL=https://artifacts.elastic.co/downloads/logstash/logstash-6.4.0.tar.gz API_TYPE=ultimate
   - LS_URL=https://artifacts.elastic.co/downloads/logstash/logstash-5.0.0.tar.gz API_TYPE=cloud
   - LS_URL=https://artifacts.elastic.co/downloads/logstash/logstash-5.0.0.tar.gz API_TYPE=ultimate
   - LS_URL=https://download.elastic.co/logstash/logstash/logstash-2.4.0.tar.gz   API_TYPE=cloud
